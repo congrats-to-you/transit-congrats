@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Поздравление от ТРАНЗИТ</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #cecece 0%, #004774 100%);
+            background-attachment: fixed;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.92);
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 90%;
+            margin: 20px;
+        }
+        
+        h1 {
+            color: #004774;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        input {
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #004774;
+            border-radius: 10px;
+            width: 250px;
+            margin: 10px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: #004774;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            background: #0066a0;
+            transform: translateY(-2px);
+        }
+        
+        /* Стили для открытки */
+        #poster {
+            display: none;
+            margin: 30px auto;
+            border-radius: 15px;
+            max-width: 550px;
+            width: 100%;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            min-height: 500px;
+        }
+        
+        .poster-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+        
+        .poster-content {
+            position: relative;
+            z-index: 2;
+            padding: 40px 30px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        
+        .poster-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .text-plate {
+            background: rgba(255, 255, 255, 0.92);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 10px 0;
+            width: 90%;
+            max-width: 480px;
+        }
+        
+        .user-name {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 25px 0;
+            color: #004774;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            border: 3px solid #004774;
+            text-align: center;
+        }
+        
+        .poster-text {
+            font-size: 17px;
+            line-height: 1.6;
+            margin: 15px 0;
+            color: #333;
+            text-align: center;
+        }
+        
+        .company-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 25px;
+            color: #004774;
+            text-align: center;
+        }
+        
+        .share-btn {
+            background: #004774;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            font-weight: bold;
+            margin-top: 25px;
+        }
+        
+        .share-btn:hover {
+            background: #0066a0;
+            transform: translateY(-2px);
+        }
+        
+        .create-new-btn {
+            background: #25D366;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        
+        .create-new-btn:hover {
+            background: #1da851;
+            transform: translateY(-2px);
+        }
+        
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        /* Скрываем форму создания когда показывается открытка */
+        .creation-form {
+            display: block;
+        }
+        
+        .poster-mode .creation-form {
+            display: none;
+        }
+        
+        .poster-mode .container {
+            max-width: 800px;
+        }
+        
+        .poster-mode #poster {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Анимация появления */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* Стили для уведомления */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #25D366;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .notification.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Запасной фон если изображения не загрузились */
+        .fallback-background {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="creation-form">
+            <h1>С Днём работника автомобильного транспорта! 🎉</h1>
+            <p class="subtitle">Компания ТРАНЗИТ поздравляет вас с профессиональным праздником!</p>
+            
+            <div>
+                <input type="text" id="nameInput" placeholder="Введите ваше имя">
+                <button onclick="createCard()">Создать открытку</button>
+            </div>
+        </div>
+        
+        <div id="poster" class="fade-in">
+            <div class="poster-background fallback-background" id="posterBackground"></div>
+            <div class="poster-content">
+                <!-- Заголовок БЕЗ белой плашки -->
+                <div class="poster-title">С Днём работника автомобильного транспорта!</div>
+                
+                <!-- Основной блок с именем и текстом -->
+                <div class="text-plate">
+                    <div class="user-name" id="displayUserName"></div>
+                    
+                    <div class="poster-text">
+                        Ваш профессионализм и преданность делу — залог нашего общего успеха! Спасибо вам за каждый километр, пройденный в любую погоду, за терпение на постах и точность в графиках.
+                    </div>
+                    <div class="poster-text">
+                        Желаем ровных дорог, зелёного света и попутного ветра!
+                    </div>
+                    <div class="company-name">С уважением, команда ТРАНЗИТ</div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="share-btn" onclick="shareCard()">
+                        📤 Поделиться
+                    </button>
+                    <button class="create-new-btn" onclick="createNewCard()">
+                        ✨ Создать свою открытку
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Уведомление о копировании -->
+    <div class="notification" id="notification">
+        Ссылка скопирована в буфер обмена! ✅
+    </div>
+
+    <script>
+        // Массив с фонами для открыток
+        const posterBackgrounds = [
+            'background1.jpg',
+            'background2.jpg'
+        ];
+
+        function getRandomBackground() {
+            const randomIndex = Math.floor(Math.random() * posterBackgrounds.length);
+            return posterBackgrounds[randomIndex];
+        }
+
+        function createCard() {
+            const name = document.getElementById('nameInput').value.trim();
+            if (!name) {
+                alert('Пожалуйста, введите ваше имя!');
+                return;
+            }
+            
+            // Устанавливаем случайный фон
+            const randomBackground = getRandomBackground();
+            const posterBg = document.getElementById('posterBackground');
+            posterBg.style.backgroundImage = `url('${randomBackground}')`;
+            
+            // Проверяем загрузку изображения
+            const img = new Image();
+            img.onload = function() {
+                posterBg.style.backgroundImage = `url('${randomBackground}')`;
+            }
+            img.onerror = function() {
+                console.log('Ошибка загрузки фона:', randomBackground);
+                posterBg.classList.add('fallback-background');
+            }
+            img.src = randomBackground;
+            
+            // Показываем имя
+            document.getElementById('displayUserName').textContent = name + '!';
+            
+            // Показываем открытку и скрываем форму создания
+            document.getElementById('poster').style.display = 'block';
+            document.body.classList.add('poster-mode');
+            
+            // Сохраняем имя в URL
+            const url = new URL(window.location);
+            url.searchParams.set('name', encodeURIComponent(name));
+            window.history.replaceState({}, '', url);
+            
+            // Прокручиваем к открытке
+            document.getElementById('poster').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        function createNewCard() {
+            // Очищаем URL параметры
+            const url = new URL(window.location);
+            url.searchParams.delete('name');
+            window.history.replaceState({}, '', url);
+            
+            // Скрываем открытку и показываем форму создания
+            document.getElementById('poster').style.display = 'none';
+            document.body.classList.remove('poster-mode');
+            
+            // Очищаем поле ввода
+            document.getElementById('nameInput').value = '';
+            
+            // Прокручиваем к форме создания
+            document.getElementById('nameInput').focus();
+            document.querySelector('.creation-form').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function shareCard() {
+            const currentUrl = window.location.href;
+
+            // Пробуем использовать системный шаринг (работает на мобильных и в современных браузерах)
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Поздравление от ТРАНЗИТ',
+                    text: 'Посмотри мою персональную открытку с поздравлением!',
+                    url: currentUrl
+                }).catch(() => {
+                    // Если пользователь отменил шаринг, копируем только ссылку
+                    copyToClipboard(currentUrl);
+                });
+            } else {
+                // Fallback - копируем только ссылку в буфер обмена
+                copyToClipboard(currentUrl);
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                showNotification();
+            }).catch(function() {
+                // Fallback для старых браузеров
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification();
+            });
+        }
+
+        // При загрузке страницы проверяем параметр name в URL
+        function checkUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const nameFromUrl = urlParams.get('name');
+            
+            if (nameFromUrl) {
+                const decodedName = decodeURIComponent(nameFromUrl);
+                document.getElementById('nameInput').value = decodedName;
+                createCard();
+            }
+        }
+
+        document.getElementById('nameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                createCard();
+            }
+        });
+
+        // Проверяем параметры при загрузке страницы
+        window.addEventListener('load', checkUrlParams);
+    </script>
+</body>
+</html>
