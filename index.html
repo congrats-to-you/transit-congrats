@@ -117,13 +117,30 @@
         /* Логотип на открытке (другой файл) */
         .logo-poster {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 50px;
-            height: auto;
-            z-index: 3;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 120px;
+    width: 20%;
+    height: auto;
+    z-index: 3;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
+        @media (max-width: 768px) {
+    .logo-poster {
+        max-width: 100px;
+        width: 25%;
+        top: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-poster {
+        max-width: 80px;
+        width: 30%;
+        top: 12px;
+    }
+}
         
         .poster-title {
             font-size: 28px;
@@ -219,6 +236,18 @@
             gap: 10px;
             margin-top: 25px;
         }
+
+        .poster-content {
+    position: relative;
+    z-index: 2;
+    padding: 60px 25px 35px 25px; /* Увеличил верхний отступ */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
         
         /* Скрываем форму создания когда показывается открытка */
         .creation-form {
