@@ -246,70 +246,6 @@
             gap: 10px;
             margin-top: 25px;
         }
-
-        /* Модальное окно для выбора платформы */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .platform-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .platform-btn {
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.3s;
-        }
-
-        .telegram-btn {
-            background: #0088cc;
-            color: white;
-        }
-
-        .whatsapp-btn {
-            background: #25D366;
-            color: white;
-        }
-
-        .copy-btn {
-            background: #666;
-            color: white;
-        }
-
-        .platform-btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
         
         /* Скрываем форму создания когда показывается открытка */
         .creation-form {
@@ -404,7 +340,7 @@
                 </div>
                 
                 <div class="action-buttons">
-                    <button class="share-btn" onclick="openShareModal()">
+                    <button class="share-btn" onclick="shareCard()">
                         📤 Поделиться
                     </button>
                     <button class="create-new-btn" onclick="createNewCard()">
@@ -415,28 +351,9 @@
         </div>
     </div>
 
-    <!-- Модальное окно выбора платформы -->
-    <div class="modal" id="shareModal">
-        <div class="modal-content">
-            <h3>Выберите способ отправки</h3>
-            <p>Текст с поздравлением уже скопирован в буфер обмена</p>
-            <div class="platform-buttons">
-                <button class="platform-btn telegram-btn" onclick="shareToTelegram()">
-                    📱 Открыть Telegram
-                </button>
-                <button class="platform-btn whatsapp-btn" onclick="shareToWhatsApp()">
-                    💚 Открыть WhatsApp
-                </button>
-                <button class="platform-btn copy-btn" onclick="closeModal()">
-                    ✅ Готово
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Уведомление о копировании -->
     <div class="notification" id="notification">
-        Текст с поздравлением скопирован! ✅
+        Поздравление скопировано! Теперь можете вставить его в любом мессенджере ✅
     </div>
 
     <script>
@@ -520,10 +437,10 @@
             notification.classList.add('show');
             setTimeout(() => {
                 notification.classList.remove('show');
-            }, 3000);
+            }, 4000);
         }
 
-        function openShareModal() {
+        function shareCard() {
             const name = document.getElementById('nameInput').value.trim();
             const currentUrl = window.location.href;
             
@@ -532,27 +449,6 @@
 
             // Копируем текст в буфер обмена
             copyToClipboard(text);
-            
-            // Показываем модальное окно
-            document.getElementById('shareModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('shareModal').style.display = 'none';
-        }
-
-        function shareToTelegram() {
-            const currentUrl = window.location.href;
-            // Открываем Telegram с ссылкой (текст уже в буфере обмена)
-            window.open(`https://t.me/share/url?url=${encodeURIComponent(currentUrl)}`, '_blank');
-            closeModal();
-        }
-
-        function shareToWhatsApp() {
-            const currentUrl = window.location.href;
-            // Открываем WhatsApp с ссылкой (текст уже в буфере обмена)
-            window.open(`https://wa.me/?text=${encodeURIComponent(currentUrl)}`, '_blank');
-            closeModal();
         }
 
         function copyToClipboard(text) {
@@ -569,13 +465,6 @@
                 showNotification();
             });
         }
-
-        // Закрываем модальное окно при клике вне его
-        document.getElementById('shareModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
 
         // При загрузке страницы проверяем параметр name в URL
         function checkUrlParams() {
