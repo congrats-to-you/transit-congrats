@@ -105,7 +105,7 @@
         .poster-content {
             position: relative;
             z-index: 2;
-            padding: 35px 25px;
+            padding: 80px 25px 35px 25px; /* Увеличил верхний отступ для большего логотипа */
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -114,33 +114,35 @@
             color: white;
         }
         
-        /* Логотип на открытке (другой файл) */
+        /* Логотип на открытке (увеличенный с адаптивностью) */
         .logo-poster {
             position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    max-width: 120px;
-    width: 20%;
-    height: auto;
-    z-index: 3;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 180px; /* Увеличил с 120px */
+            width: 25%; /* Увеличил с 20% */
+            height: auto;
+            z-index: 3;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
-        @media (max-width: 768px) {
-    .logo-poster {
-        max-width: 100px;
-        width: 25%;
-        top: 15px;
-    }
-}
 
-@media (max-width: 480px) {
-    .logo-poster {
-        max-width: 80px;
-        width: 30%;
-        top: 12px;
-    }
-}
+        /* Адаптивность для мобильных */
+        @media (max-width: 768px) {
+            .logo-poster {
+                max-width: 150px; /* Увеличил с 100px */
+                width: 30%; /* Увеличил с 25% */
+                top: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-poster {
+                max-width: 120px; /* Увеличил с 80px */
+                width: 35%; /* Увеличил с 30% */
+                top: 12px;
+            }
+        }
         
         .poster-title {
             font-size: 28px;
@@ -236,18 +238,6 @@
             gap: 10px;
             margin-top: 25px;
         }
-
-        .poster-content {
-    position: relative;
-    z-index: 2;
-    padding: 60px 25px 35px 25px; /* Увеличил верхний отступ */
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-}
         
         /* Скрываем форму создания когда показывается открытка */
         .creation-form {
@@ -338,8 +328,6 @@
                     <div class="poster-text">
                         Желаем ровных дорог, зелёного света и попутного ветра!
                     </div>
-                    <div class="company-name">С уважением, команда ТРАНЗИТ</div>
-                </div>
                 
                 <div class="action-buttons">
                     <button class="share-btn" onclick="shareCard()">
@@ -443,21 +431,25 @@
         }
 
         function shareCard() {
+            const name = document.getElementById('nameInput').value.trim();
             const currentUrl = window.location.href;
+            
+            // Добавляем текст-пояснение как было изначально
+            const text = `С Днём работника автомобильного транспорта! ${name}, компания ТРАНЗИТ поздравляет тебя с профессиональным праздником! 🚛 Посмотри мою персональную открытку:`;
 
             // Пробуем использовать системный шаринг (работает на мобильных и в современных браузерах)
             if (navigator.share) {
                 navigator.share({
                     title: 'Поздравление от ТРАНЗИТ',
-                    text: 'Посмотри мою персональную открытку с поздравлением!',
+                    text: text,
                     url: currentUrl
                 }).catch(() => {
-                    // Если пользователь отменил шаринг, копируем только ссылку
-                    copyToClipboard(currentUrl);
+                    // Если пользователь отменил шаринг, копируем ссылку с текстом
+                    copyToClipboard(text + ' ' + currentUrl);
                 });
             } else {
-                // Fallback - копируем только ссылку в буфер обмена
-                copyToClipboard(currentUrl);
+                // Fallback - копируем текст с ссылкой в буфер обмена
+                copyToClipboard(text + ' ' + currentUrl);
             }
         }
 
