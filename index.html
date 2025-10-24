@@ -304,7 +304,6 @@
 <body>
     <div class="container">
         <div class="creation-form">
-            <!-- Логотип на стартовой странице -->
             <img src="logo.png" alt="ТРАНЗИТ" class="logo-main">
             
             <h1>С Днём работника автомобильного транспорта! 🎉</h1>
@@ -319,20 +318,16 @@
         <div id="poster" class="fade-in">
             <div class="poster-background fallback-background" id="posterBackground"></div>
             
-            <!-- Логотип на открытке (другой файл) -->
             <img src="logo3.png" alt="ТРАНЗИТ" class="logo-poster">
             
             <div class="poster-content">
-                <!-- Заголовок БЕЗ белой плашки -->
                 <div class="poster-title">С Днём работника автомобильного транспорта!</div>
                 
-                <!-- Основной блок с именем и текстом -->
                 <div class="text-plate">
                     <div class="user-name" id="displayUserName"></div>
                     
                     <div class="poster-text" id="congratulationText">
-                        <!-- Текст будет подставлен случайным образом -->
-                    </div>
+                        </div>
                 <div class="action-buttons">
                     <button class="share-btn" onclick="shareCard()">
                         📤 Поделиться
@@ -345,7 +340,6 @@
         </div>
     </div>
 
-    <!-- Уведомление о копировании -->
     <div class="notification" id="notification">
         Поздравление скопировано! Теперь можете вставить его в любом мессенджере ✅
     </div>
@@ -363,7 +357,7 @@
         // Массив с текстами поздравлений
         const congratulations = [
             {
-                text: "Ваш профессионализм и преданность делу — залог нашего общего успеха! Спасибо вам за каждый километр, пройденный в любую погоду,  за каждый отлаженный маршрут и точность в графиках. Желаем полных загрузок, ровных дорог и зелёного света на трассах!",
+                text: "Ваш профессионализм и преданность делу — залог нашего общего успеха! Спасибо вам за каждый километр, пройденный в любую погоду,  за каждый отлаженный маршрут и точность в графиках. Желаем полных загрузок, ровных дорог и зелёного света на трассах!",
                 wishes: "Желаем полных загрузок, ровных дорог и зелёного света на трассах!"
             },
             {
@@ -384,71 +378,121 @@
             }
         ];
 
-        function getRandomBackground() {
-            const randomIndex = Math.floor(Math.random() * posterBackgrounds.length);
-            return posterBackgrounds[randomIndex];
+        // Глобальные переменные для сохранения выбранных индексов
+        let currentBgIndex = -1;
+        let currentTextIndex = -1;
+        let currentCongrats = null;
+        
+        /**
+         * Устанавливает фон на основе индекса.
+         * @param {number} index Индекс фона из массива posterBackgrounds.
+         */
+        function setBackground(index) {
+            // Проверка на корректность индекса
+            if (index < 0 || index >= posterBackgrounds.length) {
+                console.error(`Некорректный индекс фона: ${index}. Используется первый фон.`);
+                index = 0; // Используем первый фон как запасной
+            }
+
+            const selectedBackground = posterBackgrounds[index];
+            const posterBg = document.getElementById('posterBackground');
+
+            // Устанавливаем фон
+            posterBg.style.backgroundImage = `url('${selectedBackground}')`;
+            posterBg.classList.remove('fallback-background');
+
+            // Проверка загрузки изображения (оставляем для надежности)
+            const img = new Image();
+            img.onload = function() {
+                // Фон установлен
+            }
+            img.onerror = function() {
+                console.log('Ошибка загрузки фона:', selectedBackground);
+                posterBg.classList.add('fallback-background');
+            }
+            img.src = selectedBackground;
+
+            // Сохраняем текущий индекс фона
+            currentBgIndex = index;
         }
 
-        function getRandomCongratulations() {
-            const randomIndex = Math.floor(Math.random() * congratulations.length);
-            return congratulations[randomIndex];
+        /**
+         * Устанавливает текст поздравления на основе индекса.
+         * @param {number} index Индекс поздравления из массива congratulations.
+         */
+        function setCongratulation(index) {
+             // Проверка на корректность индекса
+            if (index < 0 || index >= congratulations.length) {
+                console.error(`Некорректный индекс текста: ${index}. Используется первый текст.`);
+                index = 0; // Используем первый текст как запасной
+            }
+
+            const selectedCongrats = congratulations[index];
+            document.getElementById('congratulationText').innerHTML =
+                `<div>${selectedCongrats.text}</div>`;
+            
+            // Сохраняем выбранное поздравление для шаринга
+            currentCongrats = selectedCongrats;
+            currentTextIndex = index;
         }
 
-        function createCard() {
+
+        /**
+         * Основная функция создания/отображения открытки.
+         * @param {number} [bgIndex] Индекс фона, если загрузка из URL.
+         * @param {number} [textIndex] Индекс текста, если загрузка из URL.
+         */
+        function createCard(bgIndex = null, textIndex = null) {
             const name = document.getElementById('nameInput').value.trim();
             if (!name) {
                 alert('Пожалуйста, введите ваше имя!');
                 return;
             }
             
-            // Устанавливаем случайный фон
-            const randomBackground = getRandomBackground();
-            const posterBg = document.getElementById('posterBackground');
-            posterBg.style.backgroundImage = `url('${randomBackground}')`;
-            
-            // Проверяем загрузку изображения
-            const img = new Image();
-            img.onload = function() {
-                posterBg.style.backgroundImage = `url('${randomBackground}')`;
+            let finalBgIndex;
+            let finalTextIndex;
+
+            // 1. Определяем индексы
+            if (bgIndex !== null && textIndex !== null) {
+                // Загрузка по ссылке: используем переданные индексы
+                finalBgIndex = bgIndex;
+                finalTextIndex = textIndex;
+            } else {
+                // Создание новой открытки: выбираем случайные индексы
+                finalBgIndex = Math.floor(Math.random() * posterBackgrounds.length);
+                finalTextIndex = Math.floor(Math.random() * congratulations.length);
             }
-            img.onerror = function() {
-                console.log('Ошибка загрузки фона:', randomBackground);
-                posterBg.classList.add('fallback-background');
-            }
-            img.src = randomBackground;
             
-            // Устанавливаем случайное поздравление
-            const randomCongrats = getRandomCongratulations();
-            document.getElementById('congratulationText').innerHTML = 
-                `<div>${randomCongrats.text}</div>`;
+            // 2. Устанавливаем фон и текст
+            setBackground(finalBgIndex);
+            setCongratulation(finalTextIndex);
             
-            // Сохраняем выбранное поздравление для шаринга
-            currentCongrats = randomCongrats;
-            
-            // Показываем имя
+            // 3. Показываем имя
             document.getElementById('displayUserName').textContent = name + '!';
             
-            // Показываем открытку и скрываем форму создания
+            // 4. Показываем открытку и скрываем форму создания
             document.getElementById('poster').style.display = 'block';
             document.body.classList.add('poster-mode');
             
-            // Сохраняем имя в URL
+            // 5. Сохраняем имя и индексы в URL (для возможности пересылки)
             const url = new URL(window.location);
             url.searchParams.set('name', encodeURIComponent(name));
+            url.searchParams.set('bg', currentBgIndex); // Используем фактически установленный индекс фона
+            url.searchParams.set('text', currentTextIndex); // Используем фактически установленный индекс текста
             window.history.replaceState({}, '', url);
             
-            // Прокручиваем к открытке
+            // 6. Прокручиваем к открытке
             document.getElementById('poster').scrollIntoView({ 
                 behavior: 'smooth' 
             });
         }
 
-        let currentCongrats = null;
-
         function createNewCard() {
-            // Очищаем URL параметры
+            // Очищаем URL параметры (имя, фон, текст)
             const url = new URL(window.location);
             url.searchParams.delete('name');
+            url.searchParams.delete('bg');
+            url.searchParams.delete('text');
             window.history.replaceState({}, '', url);
             
             // Скрываем открытку и показываем форму создания
@@ -458,6 +502,11 @@
             // Очищаем поле ввода
             document.getElementById('nameInput').value = '';
             
+            // Сбрасываем текущие индексы
+            currentBgIndex = -1;
+            currentTextIndex = -1;
+            currentCongrats = null;
+
             // Прокручиваем к форме создания
             document.getElementById('nameInput').focus();
             document.querySelector('.creation-form').scrollIntoView({ 
@@ -475,16 +524,14 @@
 
         function shareCard() {
             const name = document.getElementById('nameInput').value.trim();
-            const currentUrl = window.location.href;
+            // Получаем URL с текущими параметрами (имя, bg, text)
+            const currentUrl = window.location.href; 
             
-            // Используем текст из текущего поздравления
-            const congratsText = currentCongrats ? currentCongrats.text : congratulations[0].text;
-            
-            // Текст для шаринга
-            const text = `С Днём работника автомобильного транспорта! ${name}, команда ТРАНЗИТ поздравляет с профессиональным праздником! 🚛 Персональная открытка доступна по ссылке: ${currentUrl}`;
+            // Текст для шаринга (минималистичный, как запрошено)
+            const shareMessage = `С Днём работника автомобильного транспорта! ${name}, команда ТРАНЗИТ поздравляет с профессиональным праздником! 🚛 Персональная открытка доступна по ссылке: ${currentUrl}`;
 
             // Копируем текст в буфер обмена
-            copyToClipboard(text);
+            copyToClipboard(shareMessage);
         }
 
         function copyToClipboard(text) {
@@ -502,12 +549,27 @@
             });
         }
 
-        // При загрузке страницы проверяем параметр name в URL
+        /**
+         * Проверяет параметры URL при загрузке страницы.
+         */
         function checkUrlParams() {
             const urlParams = new URLSearchParams(window.location.search);
             const nameFromUrl = urlParams.get('name');
+            const bgIndexFromUrl = urlParams.get('bg');
+            const textIndexFromUrl = urlParams.get('text');
             
-            if (nameFromUrl) {
+            if (nameFromUrl && bgIndexFromUrl !== null && textIndexFromUrl !== null) {
+                const decodedName = decodeURIComponent(nameFromUrl);
+                const bgIndex = parseInt(bgIndexFromUrl);
+                const textIndex = parseInt(textIndexFromUrl);
+
+                // Устанавливаем имя в поле ввода
+                document.getElementById('nameInput').value = decodedName;
+
+                // Создаем открытку, используя индексы из URL, чтобы получить точную версию
+                createCard(bgIndex, textIndex);
+            } else if (nameFromUrl) {
+                // Если есть только имя (старая ссылка), генерируем случайный вариант
                 const decodedName = decodeURIComponent(nameFromUrl);
                 document.getElementById('nameInput').value = decodedName;
                 createCard();
